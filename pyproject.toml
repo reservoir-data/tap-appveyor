@@ -10,8 +10,8 @@ name = "tap-appveyor"
 description = "Singer tap for AppVeyor, built with the Meltano SDK for Singer Taps."
 readme = "README.md"
 keywords = [
-  "ELT",
   "AppVeyor",
+  "ELT",
   "singer.io",
 ]
 license.file = "LICENSE"
