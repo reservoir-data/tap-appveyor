@@ -49,7 +49,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
-        cache: pip
 
     - uses: astral-sh/setup-uv@v3
       with:
