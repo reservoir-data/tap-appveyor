@@ -1,0 +1,84 @@
+name: Test tap-appveyor
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - tap_appveyor/**
+    - tests/**
+    - pyproject.toml
+    - .github/workflows/test.yml
+    - .github/workflows/constraints.txt
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+    - tap_appveyor/**
+    - tests/**
+    - pyproject.toml
+    - .github/workflows/test.yml
+    - .github/workflows/constraints.txt
+  workflow_dispatch:
+  schedule:
+  # Run weekly on Monday at 12:00 PM UTC
+  - cron: "0 12 * * 1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: "1"
+      PIP_CONSTRAINT: ${{ github.workspace }}/.github/workflows/constraints.txt
+    strategy:
+      fail-fast: false
+      matrix:
+        script: ["test:integration"]
+        python-version:
+        - "3.9"
+        - "3.10"
+        - "3.11"
+        - "3.12"
+        - "3.13"
+        include:
+        - { script: "test:dependencies", python-version: "3.x" }
+        - { script: "typing:check",      python-version: "3.x" }
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      id: setup-python
+      with:
+        python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
+        cache: pip
+
+    - uses: astral-sh/setup-uv@v3
+      with:
+        version: ">=0.4.18"
+
+    - name: Install Hatch
+      run: |
+        uv tool install hatch
+        hatch --version
+
+    - name: Run tests
+      env:
+        HATCH_PYTHON: ${{ steps.setup-python.outputs.python-path }}
+        HATCH_VERBOSE: "1"
+        TAP_APPVEYOR_TOKEN: ${{ secrets.TAP_APPVEYOR_TOKEN }}
+        TAP_APPVEYOR_ACCOUNTS: ${{ secrets.TAP_APPVEYOR_ACCOUNTS }}
+        TAP_APPVEYOR_START_DATE: ${{ secrets.TAP_APPVEYOR_START_DATE }}
+      run: |
+        hatch run ${{ matrix.script }}
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_COLOR: "1"
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+    - uses: pre-commit/action@v3.0.1
+    - uses: pre-commit-ci/lite-action@v1.0.3
+      if: always()

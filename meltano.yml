@@ -1,0 +1,48 @@
+version: 1
+send_anonymous_usage_stats: false
+project_id: tap-appveyor
+default_environment: dev
+environments:
+- name: dev
+venv:
+  backend: uv
+plugins:
+  extractors:
+  - name: tap-appveyor
+    label: AppVeyor
+    namespace: appveyor
+    description: Build, test, deploy your apps faster, on any platform.
+    repository: https://github.com/reservoir-data/tap-appveyor
+    docs: https://github.com/reservoir-data/tap-appveyor#readme
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+
+    settings:
+    - name: token
+      kind: password
+      label: API Token
+      description: API Token for AppVeyor
+      sensitive: true
+
+    - name: accounts
+      kind: array
+      label: Accounts
+      description: Account names to get data from. This uses the user-level API key (v2) that allows working with any account user has access to.
+
+    - name: start_date
+      kind: date_iso8601
+      label: Start Date
+      description: Earliest datetime to get data from
+
+    config:
+      start_date: "2024-10-05"
+
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
