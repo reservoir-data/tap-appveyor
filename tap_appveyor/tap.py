@@ -121,6 +121,13 @@ class Collaborators(AppVeyorStream):
     ).to_dict()
 
 
+class Users(Collaborators):
+    """Users stream."""
+
+    name = "users"
+    path = "/users"
+
+
 class TapAppVeyor(Tap):
     """Singer tap for AppVeyor."""
 
@@ -149,4 +156,5 @@ class TapAppVeyor(Tap):
         return [
             Collaborators(tap=self),
             Projects(tap=self),
+            Users(tap=self),
         ]
