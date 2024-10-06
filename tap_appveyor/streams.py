@@ -12,7 +12,7 @@ class Projects(AppVeyorStream):
 
     name = "projects"
     path = "/projects"
-    primary_keys = ("id",)
+    primary_keys = ("projectId",)
     replication_key = None
 
     schema = th.PropertiesList(
