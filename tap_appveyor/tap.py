@@ -42,4 +42,4 @@ class TapAppVeyor(Tap):
         Returns:
             A list of AppVeyor streams.
         """
-        return [streams.Projects(tap=self)]
+        return [streams.Projects(tap=self), streams.Users(tap=self)]
