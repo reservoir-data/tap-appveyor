@@ -8,7 +8,7 @@ from tap_appveyor.client import AppVeyorStream
 
 
 class Projects(AppVeyorStream):
-    """Users stream."""
+    """Projects stream."""
 
     name = "projects"
     path = "/projects"
@@ -62,4 +62,30 @@ class Projects(AppVeyorStream):
             ),
         ),
         th.Property("created", th.DateTimeType),
+    ).to_dict()
+
+
+class Users(AppVeyorStream):
+    """Users stream."""
+
+    name = "users"
+    path = "/users"
+    primary_keys = ("accountId",)
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property("accountId", th.IntegerType),
+        th.Property("accountName", th.StringType),
+        th.Property("isOwner", th.BooleanType),
+        th.Property("isCollaborator", th.BooleanType),
+        th.Property("userId", th.IntegerType),
+        th.Property("fullName", th.StringType),
+        th.Property("email", th.StringType),
+        th.Property("roleId", th.IntegerType),
+        th.Property("roleName", th.StringType),
+        th.Property("successfulBuildNotification", th.StringType),
+        th.Property("failedBuildNotification", th.StringType),
+        th.Property("notifyWhenBuildStatusChangedOnly", th.BooleanType),
+        th.Property("created", th.DateTimeType),
+        th.Property("updated", th.DateTimeType),
     ).to_dict()
