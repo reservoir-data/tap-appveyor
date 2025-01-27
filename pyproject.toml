@@ -34,7 +34,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "singer-sdk~=0.43.1",
+  "singer-sdk~=0.44.0",
 ]
 optional-dependencies.dev = [
   "tap-appveyor[testing,typing]",
