@@ -9,12 +9,11 @@ venv:
 plugins:
   extractors:
   - name: tap-appveyor
-    label: AppVeyor
     namespace: appveyor
-    description: Build, test, deploy your apps faster, on any platform.
-    repository: https://github.com/reservoir-data/tap-appveyor
+    label: AppVeyor
     docs: https://github.com/reservoir-data/tap-appveyor#readme
     pip_url: -e .
+    description: Build, test, deploy your apps faster, on any platform.
     capabilities:
     - state
     - catalog
@@ -24,7 +23,7 @@ plugins:
 
     settings:
     - name: token
-      kind: password
+      kind: string
       label: API Token
       description: API Token for AppVeyor
       sensitive: true
@@ -40,8 +39,9 @@ plugins:
       description: Earliest datetime to get data from
 
     config:
-      start_date: "2024-10-05"
+      start_date: '2024-10-05'
 
+    repository: https://github.com/reservoir-data/tap-appveyor
   loaders:
   - name: target-jsonl
     variant: andyh1203

@@ -10,12 +10,12 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: 2.4.3
+    rev: v2.5.0
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.0
+    rev: v0.9.4
     hooks:
       - id: ruff
         name: Ruff lint
@@ -24,12 +24,21 @@ repos:
         name: Ruff format
 
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.4
+    rev: 0.31.1
     hooks:
-    - id: check-dependabot
-    - id: check-github-workflows
+      - id: check-github-workflows
+      - id: check-renovate
+        language: python
+        additional_dependencies:
+        - pyjson5==1.6.8
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: "0.5.26"
+    hooks:
+      - id: uv-lock
+      - id: uv-sync

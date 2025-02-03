@@ -1,8 +1,8 @@
 [build-system]
 build-backend = "hatchling.build"
 requires = [
-  "hatch-vcs",
-  "hatchling",
+  "hatch-vcs==0.4",
+  "hatchling==1.27",
 ]
 
 [project]
@@ -14,7 +14,8 @@ keywords = [
   "ELT",
   "singer.io",
 ]
-license.file = "LICENSE"
+license = "Apache-2.0"
+license-files = [ "LICENSE" ]
 maintainers = [
   { name = "Edgar Ramírez-Mondragón", email = "edgarrmondragon@hey.com" },
 ]
@@ -36,66 +37,27 @@ dynamic = [
 dependencies = [
   "singer-sdk~=0.44.0",
 ]
-optional-dependencies.dev = [
-  "tap-appveyor[testing,typing]",
-]
-optional-dependencies.testing = [
-  "deptry>=0.12",
-  "pytest>=8",
-  "singer-sdk[testing]",
-]
-optional-dependencies.typing = [
-  "mypy",
-]
 urls.Documentation = "https://github.com/reservoir-data/tap-appveyor#readme"
 urls.Homepage = "https://github.com/reservoir-data/tap-appveyor"
 urls.Repository = "https://github.com/reservoir-data/tap-appveyor"
 scripts."tap-appveyor" = "tap_appveyor.tap:TapAppVeyor.cli"
 
+[dependency-groups]
+dev = [
+  { include-group = "testing" },
+  { include-group = "typing" },
+]
+testing = [
+  "deptry>=0.12",
+  "pytest>=8",
+  "singer-sdk[testing]",
+]
+typing = [
+  "mypy",
+]
+
 [tool.hatch.version]
 source = "vcs"
-
-[tool.hatch.envs.default]
-installer = "uv"
-
-[tool.hatch.envs.default.env-vars]
-UV_PRERELEASE = "allow"
-
-[tool.hatch.envs.default.overrides]
-env.GITHUB_ACTIONS.dev-mode = { value = false, if = [
-  "true",
-] }
-
-[tool.hatch.envs.sync.scripts]
-console = "tap-appveyor {args}"
-jsonl = "tap-appveyor {args} > tap-appveyor.jsonl"
-
-[tool.hatch.envs.test]
-features = [
-  "testing",
-]
-[tool.hatch.envs.test.scripts]
-integration = "pytest {args:tests}"
-dependencies = "deptry ."
-
-[tool.hatch.envs.all]
-template = "test"
-[[tool.hatch.envs.all.matrix]]
-python = [
-  "3.9",
-  "3.10",
-  "3.11",
-  "3.12",
-  "3.13",
-]
-
-[tool.hatch.envs.typing]
-features = [
-  "testing",
-  "typing",
-]
-[tool.hatch.envs.typing.scripts]
-check = "mypy --strict {args:tap_appveyor tests}"
 
 [tool.ruff]
 line-length = 88
@@ -103,7 +65,6 @@ lint.select = [
   "ALL",
 ]
 lint.ignore = [
-  "ANN101", # missing-type-self
   "COM812", # missing-trailing-comma
   "DJ",     # flake8-django
   "FIX002", # line-contains-todo
@@ -129,25 +90,23 @@ lint.pydocstyle.convention = "google"
 
 [tool.deptry.package_module_name_map]
 mypy = "mypy"
-pytest = "pytest"
-tap-appveyor = "tap_appveyor"
 types-requests = "requests"
-
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "deptry",
-  "mypy",
-  "pytest",
-]
 
 [tool.pyproject-fmt]
 max_supported_python = "3.13"
 
 [tool.pytest.ini_options]
-addopts = "-vvv --durations=10"
+addopts = [
+  "-vvv",
+  "--durations=10",
+]
 
 [tool.mypy]
-python_version = "3.12"
+enable_error_code = [
+  "ignore-without-code",
+  "redundant-expr",
+  "truthy-bool",
+]
 warn_redundant_casts = true
 warn_return_any = true
 warn_no_return = true
@@ -160,3 +119,8 @@ ignore_missing_imports = true
 module = [
   "backoff.*",
 ]
+
+[tool.uv]
+prerelease = "allow"
+preview = true
+required-version = ">=0.5.19"
