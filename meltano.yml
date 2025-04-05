@@ -41,7 +41,7 @@ plugins:
     config:
       start_date: '2024-10-05'
 
-    repository: https://github.com/reservoir-data/tap-appveyor
+    repo: https://github.com/reservoir-data/tap-appveyor
   loaders:
   - name: target-jsonl
     variant: andyh1203
