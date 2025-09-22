@@ -73,8 +73,7 @@ jobs:
       env:
         UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
         TAP_APPVEYOR_TOKEN: ${{ secrets.TAP_APPVEYOR_TOKEN }}
-        TAP_APPVEYOR_ACCOUNTS: ${{ secrets.TAP_APPVEYOR_ACCOUNTS }}
-        TAP_APPVEYOR_START_DATE: ${{ secrets.TAP_APPVEYOR_START_DATE }}
+        TAP_APPVEYOR_ACCOUNTS: ${{ vars.TAP_APPVEYOR_ACCOUNTS }}
       run: >
         uvx
         --with tox-uv==${{ env.TOX_UV_VERSION }}

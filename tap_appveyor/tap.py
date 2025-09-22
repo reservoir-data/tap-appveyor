@@ -142,11 +142,6 @@ class TapAppVeyor(Tap):
                 "that allows working with any account user has access to."
             ),
         ),
-        th.Property(
-            "start_date",
-            th.DateTimeType,
-            description="Earliest datetime to get data from.",
-        ),
     ).to_dict()
 
     @override
