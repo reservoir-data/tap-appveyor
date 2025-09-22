@@ -95,6 +95,32 @@ class Projects(AppVeyorStream):
     ).to_dict()
 
 
+class Collaborators(AppVeyorStream):
+    """Users stream."""
+
+    name = "collaborators"
+    path = "/collaborators"
+    primary_keys = ("accountId",)
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property("accountId", th.IntegerType),
+        th.Property("accountName", th.StringType),
+        th.Property("isOwner", th.BooleanType),
+        th.Property("isCollaborator", th.BooleanType),
+        th.Property("userId", th.IntegerType),
+        th.Property("fullName", th.StringType),
+        th.Property("email", th.StringType),
+        th.Property("roleId", th.IntegerType),
+        th.Property("roleName", th.StringType),
+        th.Property("successfulBuildNotification", th.StringType),
+        th.Property("failedBuildNotification", th.StringType),
+        th.Property("notifyWhenBuildStatusChangedOnly", th.BooleanType),
+        th.Property("created", th.DateTimeType),
+        th.Property("updated", th.DateTimeType),
+    ).to_dict()
+
+
 class TapAppVeyor(Tap):
     """Singer tap for AppVeyor."""
 
@@ -126,5 +152,6 @@ class TapAppVeyor(Tap):
     @override
     def discover_streams(self) -> list[Stream]:
         return [
+            Collaborators(tap=self),
             Projects(tap=self),
         ]
