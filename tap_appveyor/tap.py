@@ -2,10 +2,97 @@
 
 from __future__ import annotations
 
-from singer_sdk import Stream, Tap
-from singer_sdk import typing as th
+from typing import Any, override
 
-from tap_appveyor import streams
+from singer_sdk import RESTStream, Stream, Tap
+from singer_sdk import typing as th
+from singer_sdk.authenticators import BearerTokenAuthenticator
+
+
+class AppVeyorStream(RESTStream[Any]):
+    """AppVeyor stream class."""
+
+    records_jsonpath = "$[*]"
+
+    @property
+    @override
+    def url_base(self) -> str:
+        url = "https://ci.appveyor.com/api"
+        if self.config.get("accounts"):
+            return f"{url}/account/{{account_name}}"
+
+        return url
+
+    @property
+    @override
+    def partitions(self) -> list[dict[str, Any]] | None:
+        if accounts := self.config.get("accounts"):
+            return [{"account_name": account} for account in accounts]
+        return None
+
+    @property
+    @override
+    def authenticator(self) -> BearerTokenAuthenticator:
+        token: str = self.config["token"]
+        return BearerTokenAuthenticator(token=token)
+
+
+class Projects(AppVeyorStream):
+    """Users stream."""
+
+    name = "projects"
+    path = "/projects"
+    primary_keys = ("projectId",)
+    replication_key = None
+
+    schema = th.PropertiesList(
+        th.Property("projectId", th.IntegerType),
+        th.Property("accountId", th.IntegerType),
+        th.Property("accountName", th.StringType),
+        th.Property(
+            "builds",
+            th.ArrayType(
+                th.ObjectType(
+                    th.Property("buildId", th.IntegerType),
+                    th.Property("jobs", th.ArrayType(th.ObjectType())),
+                    th.Property("buildNumber", th.IntegerType),
+                    th.Property("version", th.StringType),
+                    th.Property("message", th.StringType),
+                    th.Property("branch", th.StringType),
+                    th.Property("commitId", th.StringType),
+                    th.Property("authorName", th.StringType),
+                    th.Property("authorUsername", th.StringType),
+                    th.Property("committerName", th.StringType),
+                    th.Property("committerUsername", th.StringType),
+                    th.Property("committed", th.DateTimeType),
+                    th.Property("messages", th.ArrayType(th.ObjectType())),
+                    th.Property("status", th.StringType),
+                    th.Property("started", th.DateTimeType),
+                    th.Property("finished", th.DateTimeType),
+                    th.Property("created", th.DateTimeType),
+                    th.Property("updated", th.DateTimeType),
+                )
+            ),
+        ),
+        th.Property("name", th.StringType),
+        th.Property("slug", th.StringType),
+        th.Property("repositoryType", th.StringType),
+        th.Property("repositoryScm", th.StringType),
+        th.Property("repositoryName", th.StringType),
+        th.Property("repositoryBranch", th.StringType),
+        th.Property("isPrivate", th.BooleanType),
+        th.Property("skipBranchesWithoutAppveyorYml", th.BooleanType),
+        th.Property(
+            "nuGetFeed",
+            th.ObjectType(
+                th.Property("id", th.StringType),
+                th.Property("name", th.StringType),
+                th.Property("publishingEnabled", th.BooleanType),
+                th.Property("created", th.DateTimeType),
+            ),
+        ),
+        th.Property("created", th.DateTimeType),
+    ).to_dict()
 
 
 class TapAppVeyor(Tap):
@@ -36,10 +123,8 @@ class TapAppVeyor(Tap):
         ),
     ).to_dict()
 
+    @override
     def discover_streams(self) -> list[Stream]:
-        """Return a list of discovered streams.
-
-        Returns:
-            A list of AppVeyor streams.
-        """
-        return [streams.Projects(tap=self)]
+        return [
+            Projects(tap=self),
+        ]
