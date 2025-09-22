@@ -38,7 +38,7 @@ class AppVeyorStream(RESTStream[Any]):
 
 
 class Projects(AppVeyorStream):
-    """Users stream."""
+    """Projects stream."""
 
     name = "projects"
     path = "/projects"
