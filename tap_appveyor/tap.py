@@ -143,7 +143,7 @@ class TapAppVeyor(Tap):
         ),
         th.Property(
             "accounts",
-            th.ArrayType(th.StringType),
+            th.ArrayType(th.StringType),  # ty: ignore[invalid-argument-type]
             description=(
                 "Account names to get data from. This uses the user-level API key (v2) "
                 "that allows working with any account user has access to."
