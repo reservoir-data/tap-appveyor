@@ -33,7 +33,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "singer-sdk~=0.51.0",
+  "singer-sdk~=0.53.2",
 ]
 urls.Documentation = "https://github.com/reservoir-data/tap-appveyor#readme"
 urls.Homepage = "https://github.com/reservoir-data/tap-appveyor"
