@@ -2,7 +2,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs==0.5",
-  "hatchling==1.29.0",
+  "hatchling==1.29",
 ]
 
 [project]
@@ -16,12 +16,6 @@ keywords = [
 ]
 license = "Apache-2.0"
 license-files = [ "LICENSE" ]
-maintainers = [
-  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
-]
-authors = [
-  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
-]
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -35,10 +29,18 @@ dynamic = [
 dependencies = [
   "singer-sdk~=0.53.2",
 ]
-urls.Documentation = "https://github.com/reservoir-data/tap-appveyor#readme"
-urls.Homepage = "https://github.com/reservoir-data/tap-appveyor"
-urls.Repository = "https://github.com/reservoir-data/tap-appveyor"
-scripts."tap-appveyor" = "tap_appveyor.tap:TapAppVeyor.cli"
+[[project.authors]]
+name = "Edgar Ramírez-Mondragón"
+email = "edgarrm358@gmail.com"
+[[project.maintainers]]
+name = "Edgar Ramírez-Mondragón"
+email = "edgarrm358@gmail.com"
+[project.scripts]
+"tap-appveyor" = "tap_appveyor.tap:TapAppVeyor.cli"
+[project.urls]
+Documentation = "https://github.com/reservoir-data/tap-appveyor#readme"
+Homepage = "https://github.com/reservoir-data/tap-appveyor"
+Repository = "https://github.com/reservoir-data/tap-appveyor"
 
 [dependency-groups]
 dev = [
@@ -47,63 +49,76 @@ dev = [
 ]
 testing = [
   "deptry>=0.12",
-  "pytest>=8",
+  "pytest>=9",
   "singer-sdk[testing]",
 ]
 typing = [
   "mypy",
-  "ty>=0.0.1a21",
+  "ty>=0.0.21",
 ]
 
 [tool.hatch.version]
 source = "vcs"
 
 [tool.uv]
+required-version = ">=0.10"
 prerelease = "allow"
 preview = true
-required-version = ">=0.5.19"
 
 [tool.ruff]
 line-length = 88
-lint.select = [
+[tool.ruff.lint]
+select = [
   "ALL",
 ]
-lint.ignore = [
+ignore = [
   "COM812", # missing-trailing-comma
   "DJ",     # flake8-django
   "FIX002", # line-contains-todo
   "ISC001", # single-line-implicit-string-concatenation
   "PD",     # pandas-vet
 ]
-lint.per-file-ignores."tests/*" = [
+per-file-ignores."tests/*" = [
   "ANN201", # missing-return-type-public-function
   "S101",   # assert
   "SLF001", # private-member-access
 ]
-lint.unfixable = [
+unfixable = [
   "ERA001", # commented-out-code
 ]
-lint.flake8-annotations.allow-star-arg-any = true
-lint.isort.known-first-party = [
+flake8-annotations.allow-star-arg-any = true
+isort.known-first-party = [
   "tap_appveyor",
 ]
-lint.isort.required-imports = [
+isort.required-imports = [
   "from __future__ import annotations",
 ]
-lint.pydocstyle.convention = "google"
+pydocstyle.convention = "google"
 
 [tool.deptry.package_module_name_map]
 mypy = "mypy"
 types-requests = "requests"
 
 [tool.pyproject-fmt]
-max_supported_python = "3.14"
+table_format = "long"
 
-[tool.pytest.ini_options]
+[tool.pytest]
 addopts = [
   "-vvv",
   "--durations=10",
+  "-ra",
+  "--strict-config",
+  "--strict-markers",
 ]
+filterwarnings = [
+  "error",
+  "once:No records were available to test:UserWarning",
+]
+log_level = "INFO"
+minversion = "9"
+strict = true
+testpaths = [ "tests" ]
+xfail_strict = true
 
 [tool.tox]
 min_version = "4.22"
@@ -114,19 +129,17 @@ requires = [
 env_list = [
   "dependencies",
   "typing",
-  "3.14",
-  "3.13",
-  "3.12",
+  { product = [
+    { prefix = "3.", start = 12 },
+  ] },
 ]
-
 [tool.tox.env.dependencies]
 dependency_groups = [ "testing" ]
 commands = [ [ "deptry", "." ] ]
-
 [tool.tox.env.typing]
 dependency_groups = [ "testing", "typing" ]
 commands = [
-  [ "mypy", "--strict", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
+  [ "mypy", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
 ]
 
@@ -142,6 +155,7 @@ enable_error_code = [
   "redundant-expr",
   "truthy-bool",
 ]
+strict = true
 warn_redundant_casts = true
 warn_return_any = true
 warn_no_return = true
