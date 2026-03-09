@@ -73,7 +73,6 @@ jobs:
         version: ${{ env.UV_VERSION }}
     - name: Run tests
       env:
-        UV_PYTHON: ${{ steps.setup-python.outputs.python-path }}
         TAP_APPVEYOR_TOKEN: ${{ secrets.TAP_APPVEYOR_TOKEN }}
         TAP_APPVEYOR_ACCOUNTS: ${{ vars.TAP_APPVEYOR_ACCOUNTS }}
       run: >
