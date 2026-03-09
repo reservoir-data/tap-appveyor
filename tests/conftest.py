@@ -8,7 +8,6 @@ XFAIL_EMPTY = pytest.mark.xfail(reason="No records returned")
 
 MAYBE_EMPTY = [
     "test_tap_stream_returns_record[collaborators]",
-    "test_tap_stream_returns_record[projects]",
     "test_tap_stream_returns_record[users]",
 ]
 
