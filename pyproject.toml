@@ -15,7 +15,6 @@ keywords = [
   "singer.io",
 ]
 license = "Apache-2.0"
-license-files = [ "LICENSE" ]
 requires-python = ">=3.12"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
@@ -36,7 +35,7 @@ email = "edgarrm358@gmail.com"
 name = "Edgar Ramírez-Mondragón"
 email = "edgarrm358@gmail.com"
 [project.scripts]
-"tap-appveyor" = "tap_appveyor.tap:TapAppVeyor.cli"
+tap-appveyor = "tap_appveyor.tap:TapAppVeyor.cli"
 [project.urls]
 Documentation = "https://github.com/reservoir-data/tap-appveyor#readme"
 Homepage = "https://github.com/reservoir-data/tap-appveyor"
@@ -55,9 +54,11 @@ testing = [
 typing = [
   "mypy",
   "ty>=0.0.21",
+  { include-group = "testing" },
 ]
 
 [tool.hatch.version]
+fallback-version = "0.1.0.dev0"
 source = "vcs"
 
 [tool.uv]
@@ -87,67 +88,14 @@ unfixable = [
   "ERA001", # commented-out-code
 ]
 flake8-annotations.allow-star-arg-any = true
-isort.known-first-party = [
-  "tap_appveyor",
-]
-isort.required-imports = [
-  "from __future__ import annotations",
-]
 pydocstyle.convention = "google"
 
 [tool.deptry.package_module_name_map]
 mypy = "mypy"
-types-requests = "requests"
+ty = "ty"
 
 [tool.pyproject-fmt]
 table_format = "long"
-
-[tool.pytest]
-addopts = [
-  "-vvv",
-  "--durations=10",
-  "-ra",
-  "--strict-config",
-  "--strict-markers",
-]
-filterwarnings = [
-  "error",
-  "once:No records were available to test:UserWarning",
-]
-log_level = "INFO"
-minversion = "9"
-strict = true
-testpaths = [ "tests" ]
-xfail_strict = true
-
-[tool.tox]
-min_version = "4.22"
-requires = [
-  "tox",
-  "tox-uv",
-]
-env_list = [
-  "dependencies",
-  "typing",
-  { product = [
-    { prefix = "3.", start = 12 },
-  ] },
-]
-[tool.tox.env.dependencies]
-dependency_groups = [ "testing" ]
-commands = [ [ "deptry", "." ] ]
-[tool.tox.env.typing]
-dependency_groups = [ "testing", "typing" ]
-commands = [
-  [ "mypy", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
-  [ "ty", "check", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
-]
-
-[tool.tox.env_run_base]
-runner = "uv-venv-lock-runner"
-pass_env = [ "TAP_APPVEYOR_*" ]
-dependency_groups = [ "testing" ]
-commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]
 
 [tool.mypy]
 enable_error_code = [
@@ -162,3 +110,52 @@ warn_no_return = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+[tool.pytest]
+addopts = [
+  "-v",
+  "-ra",
+  "--durations=10",
+]
+filterwarnings = [
+  "error",
+  "once:No records were available to test:UserWarning",
+]
+log_level = "INFO"
+minversion = "9"
+strict = true
+testpaths = [ "tests" ]
+
+[tool.tox]
+requires = [
+  "tox>=4.51",
+  "tox-uv",
+]
+env_list = [
+  "dependencies",
+  "typing",
+  "test",
+]
+[tool.tox.env.dependencies]
+description = "check for unused, missing and transitive dependencies"
+dependency_groups = [ "testing" ]
+labels = [ "check" ]
+commands = [ [ "deptry", "." ] ]
+[tool.tox.env.test]
+description = "run tests on Python {py_dot_ver}"
+base_python = "3.14"  # TODO: Use .python-version (https://github.com/tox-dev/tox/issues/3894)
+[tool.tox.env.typing]
+description = "type checks with mypy and ty"
+dependency_groups = [ "testing", "typing" ]
+labels = [ "check" ]
+commands = [
+  [ "mypy", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
+  [ "ty", "check", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
+]
+
+[tool.tox.env_run_base]
+description = "run tests on Python {env_name}"
+runner = "uv-venv-lock-runner"
+pass_env = [ "TAP_APPVEYOR_*" ]
+dependency_groups = [ "testing" ]
+commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]

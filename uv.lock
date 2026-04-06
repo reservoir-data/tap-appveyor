@@ -715,7 +715,10 @@ testing = [
     { name = "singer-sdk", extra = ["testing"] },
 ]
 typing = [
+    { name = "deptry" },
     { name = "mypy" },
+    { name = "pytest" },
+    { name = "singer-sdk", extra = ["testing"] },
     { name = "ty" },
 ]
 
@@ -736,7 +739,10 @@ testing = [
     { name = "singer-sdk", extras = ["testing"] },
 ]
 typing = [
+    { name = "deptry", specifier = ">=0.12" },
     { name = "mypy" },
+    { name = "pytest", specifier = ">=9" },
+    { name = "singer-sdk", extras = ["testing"] },
     { name = "ty", specifier = ">=0.0.21" },
 ]
 
