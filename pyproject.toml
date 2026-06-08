@@ -26,7 +26,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "singer-sdk~=0.54.0a4",
+  "singer-sdk~=0.54.4",
 ]
 [[project.authors]]
 name = "Edgar Ramírez-Mondragón"
@@ -43,17 +43,17 @@ Repository = "https://github.com/reservoir-data/tap-appveyor"
 
 [dependency-groups]
 dev = [
+  "deptry>=0.25.1",
   { include-group = "testing" },
   { include-group = "typing" },
 ]
 testing = [
-  "deptry>=0.12",
   "pytest>=9",
   "singer-sdk[testing]",
 ]
 typing = [
-  "mypy",
-  "ty>=0.0.21",
+  "mypy>=2.1",
+  "ty>=0.0.44",
   { include-group = "testing" },
 ]
 
@@ -62,7 +62,7 @@ fallback-version = "0.1.0.dev0"
 source = "vcs"
 
 [tool.uv]
-required-version = ">=0.10"
+required-version = ">=0.11"
 prerelease = "allow"
 preview = true
 
@@ -90,26 +90,22 @@ unfixable = [
 flake8-annotations.allow-star-arg-any = true
 pydocstyle.convention = "google"
 
-[tool.deptry.package_module_name_map]
-mypy = "mypy"
-ty = "ty"
-
 [tool.pyproject-fmt]
 table_format = "long"
 
 [tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
 enable_error_code = [
   "ignore-without-code",
   "redundant-expr",
   "truthy-bool",
 ]
 strict = true
-warn_redundant_casts = true
-warn_return_any = true
-warn_no_return = true
-warn_unreachable = true
 warn_unused_configs = true
-warn_unused_ignores = true
 
 [tool.pytest]
 addopts = [
@@ -128,34 +124,34 @@ testpaths = [ "tests" ]
 
 [tool.tox]
 requires = [
-  "tox>=4.51",
+  "tox>=4.55",
   "tox-uv",
 ]
 env_list = [
   "dependencies",
-  "typing",
   "test",
+  "typing",
 ]
 [tool.tox.env.dependencies]
 description = "check for unused, missing and transitive dependencies"
-dependency_groups = [ "testing" ]
-labels = [ "check" ]
+dependency_groups = [ "dev" ]
 commands = [ [ "deptry", "." ] ]
+labels = [ "check" ]
 [tool.tox.env.test]
 description = "run tests on Python {py_dot_ver}"
-base_python = "3.14"  # TODO: Use .python-version (https://github.com/tox-dev/tox/issues/3894)
+base_python_file = [ ".python-version" ]
 [tool.tox.env.typing]
 description = "type checks with mypy and ty"
 dependency_groups = [ "testing", "typing" ]
-labels = [ "check" ]
 commands = [
   [ "mypy", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
   [ "ty", "check", { replace = "posargs", default = [ "tap_appveyor", "tests" ], extend = true } ],
 ]
+labels = [ "check" ]
 
 [tool.tox.env_run_base]
-description = "run tests on Python {env_name}"
 runner = "uv-venv-lock-runner"
-pass_env = [ "TAP_APPVEYOR_*" ]
+description = "run tests on Python {env_name}"
 dependency_groups = [ "testing" ]
+pass_env = [ "TAP_APPVEYOR_*" ]
 commands = [ [ "pytest", { replace = "posargs", default = [ "tests" ], extend = true } ] ]

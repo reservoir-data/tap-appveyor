@@ -826,12 +826,10 @@ dev = [
     { name = "ty" },
 ]
 testing = [
-    { name = "deptry" },
     { name = "pytest" },
     { name = "singer-sdk", extra = ["testing"] },
 ]
 typing = [
-    { name = "deptry" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "singer-sdk", extra = ["testing"] },
@@ -839,27 +837,25 @@ typing = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "singer-sdk", specifier = "~=0.54.0a4" }]
+requires-dist = [{ name = "singer-sdk", specifier = "~=0.54.4" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "deptry", specifier = ">=0.12" },
-    { name = "mypy" },
+    { name = "deptry", specifier = ">=0.25.1" },
+    { name = "mypy", specifier = ">=2.1" },
     { name = "pytest", specifier = ">=9" },
     { name = "singer-sdk", extras = ["testing"] },
-    { name = "ty", specifier = ">=0.0.21" },
+    { name = "ty", specifier = ">=0.0.44" },
 ]
 testing = [
-    { name = "deptry", specifier = ">=0.12" },
     { name = "pytest", specifier = ">=9" },
     { name = "singer-sdk", extras = ["testing"] },
 ]
 typing = [
-    { name = "deptry", specifier = ">=0.12" },
-    { name = "mypy" },
+    { name = "mypy", specifier = ">=2.1" },
     { name = "pytest", specifier = ">=9" },
     { name = "singer-sdk", extras = ["testing"] },
-    { name = "ty", specifier = ">=0.0.21" },
+    { name = "ty", specifier = ">=0.0.44" },
 ]
 
 [[package]]
