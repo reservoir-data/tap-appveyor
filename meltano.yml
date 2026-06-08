@@ -1,4 +1,4 @@
-version: 1
+requires_meltano: ">=4"
 send_anonymous_usage_stats: false
 project_id: tap-appveyor
 default_environment: dev
