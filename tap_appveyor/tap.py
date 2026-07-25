@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar-Ramírez Mondragón
+
 """AppVeyor tap class."""
 
 from __future__ import annotations
