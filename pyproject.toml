@@ -59,8 +59,8 @@ typing = [
 ]
 
 [tool.hatch.version]
-fallback-version = "0.1.0.dev0"
 source = "vcs"
+fallback-version = "0.1.0.dev0"
 
 [tool.uv]
 required-version = ">=0.11"
