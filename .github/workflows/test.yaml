@@ -45,7 +45,7 @@ env:
 jobs:
   build-package:
     name: Build & verify package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       supported-python-versions: ${{ steps.baipp.outputs.supported_python_classifiers_json_array }}
     steps:
